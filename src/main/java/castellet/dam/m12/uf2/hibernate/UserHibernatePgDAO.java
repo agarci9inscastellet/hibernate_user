@@ -1,0 +1,48 @@
+package castellet.dam.m12.uf2.hibernate;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import java.util.List;
+
+public class UserHibernatePgDAO {
+
+    private final SessionFactory sessionFactory;
+
+    public UserHibernatePgDAO(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    // Guardar un usuari
+    public void saveUser(User user) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.save(user);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }
+    }
+
+    // Obtenir tots els usuaris
+    public List<User> getAllUsers() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<User> query = session.createQuery("FROM User", User.class);
+            return query.getResultList();
+        }
+    }
+
+    // Buscar usuaris per nom
+    public List<User> findUserByName(String name) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<User> query = session.createQuery("FROM User WHERE name LIKE :name", User.class);
+            query.setParameter("name", "%" + name + "%");
+            return query.getResultList();
+        }
+    }
+}
