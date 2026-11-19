@@ -6,16 +6,21 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import java.util.List;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 public class UserHibernatePgDAO {
 
     private final SessionFactory sessionFactory;
 
     public UserHibernatePgDAO(SessionFactory sessionFactory) {
+        Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
         this.sessionFactory = sessionFactory;
     }
 
     // Guardar un usuari
-    public void saveUser(User user) {
+    public void add(User user) {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
@@ -30,7 +35,7 @@ public class UserHibernatePgDAO {
     }
 
     // Obtenir tots els usuaris
-    public List<User> getAllUsers() {
+    public List<User> getAll() {
         try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("FROM User", User.class);
             return query.getResultList();
@@ -38,7 +43,7 @@ public class UserHibernatePgDAO {
     }
 
     // Buscar usuaris per nom
-    public List<User> findUserByName(String name) {
+    public List<User> getByName(String name) {
         try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("FROM User WHERE name LIKE :name", User.class);
             query.setParameter("name", "%" + name + "%");

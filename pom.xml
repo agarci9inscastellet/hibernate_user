@@ -44,20 +44,6 @@
       <artifactId>postgresql</artifactId>
       <version>42.6.0</version>
     </dependency>
-
-    <!-- Logging -->
-    <dependency>
-        <groupId>org.jboss.logging</groupId>
-        <artifactId>jboss-logging</artifactId>
-        <version>3.4.1.Final</version>
-    </dependency>
-
-    <!-- H2 Database for testing purposes (optional) -->
-    <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <version>1.4.199</version>
-    </dependency>
   </dependencies>
 
   <build>

@@ -7,16 +7,16 @@ public class MainView {
 
     private final Scanner scanner;
 
-    public MainView(Scanner scanner) {
-        this.scanner = scanner;
+    public MainView() {
+        this.scanner = new Scanner(System.in);
     }
 
-    public int showMenu() {
+    public int mainMenu() {
         System.out.println("""
                 \n\n
                 --------------------------------------
-                1. Afegir usuari
-                2. Listar usuaris
+                1. Listar usuaris
+                2. Afegir usuari
                 3. Buscar usuari per nom
                 0. Salir
                 --------------------------------------
@@ -25,7 +25,7 @@ public class MainView {
         return scanner.nextInt();
     }
 
-    public User userForm() {
+    public User addUserForm() {
         System.out.println("\n\n-------------------------------\n");
         System.out.print("Nom de l'usuari': ");
         scanner.nextLine(); // Limpiar buffer

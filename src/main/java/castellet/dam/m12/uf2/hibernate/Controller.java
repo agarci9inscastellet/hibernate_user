@@ -1,70 +1,43 @@
 package castellet.dam.m12.uf2.hibernate;
-
-import java.util.List;
-import java.util.Scanner;
-
-import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.SessionFactory;
 
 public class Controller {
+	public static void main(String[] args) { 
+		System.out.println("Current directory (aquí heu de posar el XML): " + System.getProperty("user.dir"));
+		Controller controller = new Controller();
+		controller.init();
+	}
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        MainView mainView = new MainView(scanner);
-
-        // Inicialitzar la SessionFactory i el DAO
+	private void init() {
+		MainView mainView = new MainView();
         SessionFactory sessionFactory = new Configuration()
                 .configure("hibernate.cfg.xml")
                 .addAnnotatedClass(User.class)
                 .buildSessionFactory();
+		UserHibernatePgDAO userPgDAO = new UserHibernatePgDAO(sessionFactory);
+        //UserPgDAO userPgDAO = new UserPgDAO(ConnectionManager.getConnection("database.xml"));
 
-        UserHibernatePgDAO userDAO = new UserHibernatePgDAO(sessionFactory);
+		int option = mainView.mainMenu();
 
-        int option = -1;
-
-        do {
-            try {
-                option = mainView.showMenu();
-
-                switch (option) {
-                    case 1: {
-                        User newUser = mainView.userForm();
-                        userDAO.saveUser(newUser);
-                        System.out.println("Usuari guardat correctament.");
-                        break;
-                    }
-                    case 2: {
-                        List<User> users = userDAO.getAllUsers();
-                        if (users.isEmpty()) {
-                            System.out.println("No hi ha users.");
-                        } else {
-                            System.out.println("Llista d'usuaris:");
-                            for (User u : users) {
-                                System.out.println(u);
-                            }
-                        }   
-                        break;
-                    }
-                    case 3: {
-                        String name = mainView.askForUserName();
-                        List<User> users = userDAO.findUserByName(name);
-                        mainView.userList(users);
-                        break;
-                    }
-                    case 0: {
-                        System.out.println("Saliendo...");
-                        break;
-                    }
-                    default:
-                        System.out.println("Opción no válida.");
-                }
-            } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
-            }
-        } while (option != 0);
-
-        // Tancar la SessionFactory en sortir
-        sessionFactory.close();
-        scanner.close();
-    }
+        
+		// switch option
+		switch (option) {
+			case 1:
+					mainView.userList(userPgDAO.getAll());
+				break;
+			
+			case 2:
+					User newUser = mainView.addUserForm();
+					if (newUser != null){
+						userPgDAO.add(newUser);
+					}
+					else{
+						//mainView.showError("Error al crear l'usuari");
+					}
+		
+			default:
+				break;
+		}
+	}
 }
